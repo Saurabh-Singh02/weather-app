@@ -24,6 +24,101 @@ const body = document.body;
 let currentUnit = 'celsius';
 let currentWeatherData = null;
 
+// City to landmark mapping for better image results
+const cityLandmarks = {
+    // International cities
+    'paris': 'Eiffel Tower Paris',
+    'london': 'Big Ben London',
+    'rome': 'Colosseum Rome',
+    'new york': 'Statue of Liberty New York',
+    'tokyo': 'Tokyo Tower',
+    'sydney': 'Sydney Opera House',
+    'cairo': 'Pyramids of Giza',
+    'dubai': 'Burj Khalifa Dubai',
+    'barcelona': 'Sagrada Familia Barcelona',
+    'prague': 'Prague Castle',
+    'amsterdam': 'Amsterdam Canals',
+    'venice': 'Venice Canals',
+    'athens': 'Acropolis Athens',
+    'berlin': 'Brandenburg Gate Berlin',
+    'moscow': 'Saint Basil Cathedral Moscow',
+    'beijing': 'Great Wall of China',
+    'shanghai': 'Shanghai Tower',
+    'kyoto': 'Fushimi Inari Shrine Kyoto',
+    'bangkok': 'Grand Palace Bangkok',
+    'singapore': 'Marina Bay Sands Singapore',
+    'kuala lumpur': 'Petronas Towers Kuala Lumpur',
+    'istanbul': 'Hagia Sophia Istanbul',
+    'rio de janeiro': 'Christ the Redeemer Rio',
+    
+    // Major Indian cities
+    'delhi': 'India Gate Delhi',
+    'mumbai': 'Gateway of India Mumbai',
+    'bangalore': 'Bangalore Palace',
+    'chennai': 'Marina Beach Chennai',
+    'kolkata': 'Howrah Bridge Kolkata',
+    'hyderabad': 'Charminar Hyderabad',
+    'pune': 'Shaniwar Wada Pune',
+    'ahmedabad': 'Sabarmati Ashram Ahmedabad',
+    'jaipur': 'Hawa Mahal Jaipur',
+    'surat': 'Surat Castle',
+    'lucknow': 'Bara Imambara Lucknow',
+    'kanpur': 'Kanpur Memorial Church',
+    'nagpur': 'Deekshabhoomi Nagpur',
+    'indore': 'Rajwada Palace Indore',
+    'thane': 'Upvan Lake Thane',
+    'bhopal': 'Taj-ul-Masajid Bhopal',
+    'visakhapatnam': 'Rishikonda Beach Visakhapatnam',
+    'patna': 'Golghar Patna',
+    'vadodara': 'Laxmi Vilas Palace Vadodara',
+    'ghaziabad': 'Ghaziabad City',
+    'ludhiana': 'Ludhiana Clock Tower',
+    'agra': 'Taj Mahal Agra',
+    'nashik': 'Sula Vineyards Nashik',
+    'faridabad': 'Faridabad City',
+    'meerut': 'Meerut City',
+    'rajkot': 'Rotary Dolls Museum Rajkot',
+    'kalyan': 'Kalyan City',
+    'vasai': 'Vasai Fort',
+    'varanasi': 'Ganges Ghats Varanasi',
+    'srinagar': 'Dal Lake Srinagar',
+    'aurangabad': 'Bibi Ka Maqbara Aurangabad',
+    'dhanbad': 'Dhanbad City',
+    'amritsar': 'Golden Temple Amritsar',
+    'allahabad': 'Triveni Sangam Allahabad',
+    'ranchi': 'Ranchi Lake',
+    'gwalior': 'Gwalior Fort',
+    'jodhpur': 'Mehrangarh Fort Jodhpur',
+    'kochi': 'Chinese Fishing Nets Kochi',
+    'goa': 'Goa Beaches',
+    'chandigarh': 'Rock Garden Chandigarh',
+    'thiruvananthapuram': 'Kovalam Beach Thiruvananthapuram',
+    'coimbatore': 'Marudhamalai Temple Coimbatore',
+    'madurai': 'Meenakshi Temple Madurai',
+    'guwahati': 'Kamakhya Temple Guwahati',
+    'bhubaneswar': 'Lingaraj Temple Bhubaneswar',
+    'dehradun': 'Robbers Cave Dehradun',
+    'mangalore': 'Mangalore Beaches',
+    'jabalpur': 'Bhedaghat Marble Rocks Jabalpur',
+    'jamshedpur': 'Jubilee Park Jamshedpur',
+    'mysore': 'Mysore Palace',
+    'vellore': 'Vellore Fort',
+    'salem': 'Salem City',
+    'tiruchirappalli': 'Srirangam Temple Tiruchirappalli',
+    'kota': 'Kota Barrage',
+    'ajmer': 'Ajmer Sharif Dargah',
+    'shimla': 'Shimla Ridge',
+    'manali': 'Solang Valley Manali',
+    'darjeeling': 'Darjeeling Tea Gardens',
+    'shillong': 'Shillong Peak',
+    'gangtok': 'MG Marg Gangtok',
+    'leh': 'Pangong Lake Leh',
+    'kanyakumari': 'Vivekananda Rock Memorial Kanyakumari',
+    'pondicherry': 'Pondicherry Beach',
+    'andaman': 'Andaman Islands',
+    'lakshadweep': 'Lakshadweep Islands'
+};
+
 // Event Listeners
 searchBtn.addEventListener('click', getWeather);
 locationBtn.addEventListener('click', getWeatherByLocation);
@@ -54,10 +149,10 @@ async function getWeather() {
         // Update UI with weather data
         updateWeatherUI(weatherData);
         
-        // Get city image
+        // Get city image with landmark pattern
         const imageUrl = await fetchCityImage(city);
         cityImage.src = imageUrl;
-        cityImage.alt = `Image of ${weatherData.name}`;
+        cityImage.alt = `Landmark of ${weatherData.name}`;
         
         // Get forecast data
         const forecastData = await fetchForecastData(city);
@@ -95,10 +190,10 @@ function getWeatherByLocation() {
                 // Update UI with weather data
                 updateWeatherUI(weatherData);
                 
-                // Get city image
+                // Get city image with landmark pattern
                 const imageUrl = await fetchCityImage(weatherData.name);
                 cityImage.src = imageUrl;
-                cityImage.alt = `Image of ${weatherData.name}`;
+                cityImage.alt = `Landmark of ${weatherData.name}`;
                 
                 // Get forecast data
                 const forecastData = await fetchForecastByCoords(latitude, longitude);
@@ -170,14 +265,41 @@ async function fetchForecastByCoords(lat, lon) {
     return await response.json();
 }
 
-// Fetch city image from Unsplash
+// Fetch city image from Unsplash with landmark pattern
 async function fetchCityImage(city) {
     try {
-        const url = `https://api.unsplash.com/photos/random?query=${city}&orientation=landscape&client_id=${unsplashApiKey}`;
+        // Normalize city name for lookup
+        const normalizedCity = city.toLowerCase().trim();
+        
+        // Use predefined landmark if available, otherwise use city name with "landmark"
+        let searchQuery = cityLandmarks[normalizedCity] || `${city} landmark`;
+        
+        // Special handling for cities with multiple famous landmarks
+        if (normalizedCity === 'delhi') {
+            const delhiLandmarks = ['India Gate Delhi', 'Qutub Minar Delhi', 'Red Fort Delhi', 'Lotus Temple Delhi'];
+            searchQuery = delhiLandmarks[Math.floor(Math.random() * delhiLandmarks.length)];
+        }
+        else if (normalizedCity === 'mumbai') {
+            const mumbaiLandmarks = ['Gateway of India Mumbai', 'Marine Drive Mumbai', 'Chhatrapati Shivaji Terminus', 'Elephanta Caves Mumbai'];
+            searchQuery = mumbaiLandmarks[Math.floor(Math.random() * mumbaiLandmarks.length)];
+        }
+        else if (normalizedCity === 'agra') {
+            searchQuery = 'Taj Mahal Agra';
+        }
+        else if (normalizedCity === 'jaipur') {
+            const jaipurLandmarks = ['Hawa Mahal Jaipur', 'Amber Fort Jaipur', 'City Palace Jaipur', 'Jantar Mantar Jaipur'];
+            searchQuery = jaipurLandmarks[Math.floor(Math.random() * jaipurLandmarks.length)];
+        }
+        else if (normalizedCity === 'varanasi') {
+            const varanasiLandmarks = ['Ganges Ghats Varanasi', 'Kashi Vishwanath Temple', 'Sarnath Varanasi'];
+            searchQuery = varanasiLandmarks[Math.floor(Math.random() * varanasiLandmarks.length)];
+        }
+        
+        const url = `https://api.unsplash.com/photos/random?query=${encodeURIComponent(searchQuery)}&orientation=landscape&client_id=${unsplashApiKey}`;
         const response = await fetch(url);
         
         if (!response.ok) {
-            throw new Error('Image not found');
+            throw new Error('Landmark image not found');
         }
         
         const data = await response.json();
