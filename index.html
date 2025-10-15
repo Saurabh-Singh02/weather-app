@@ -3,25 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather Application</title>
+    <title>Weather Forecast App</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="weather-container">
-        <h1>Weather App</h1>
-        <div class="location">
-            <input type="text" id="city-input" placeholder="Enter city">
-            <button onclick="getWeather()">Get Weather</button>
-        </div>
-        <div class="weather-info">
-            <h2 id="city-name"></h2>
-            <p id="weather-desc"></p>
-            <p id="temp"></p>
-        </div>
-        <div class="image-container">
-            <img id="city-image" src="" alt="City Image">
+    <div class="container">
+        <div class="weather-app">
+            <header>
+                <h1><i class="fas fa-cloud-sun"></i> Weather Forecast</h1>
+                <div class="search-container">
+                    <input type="text" id="city-input" placeholder="Enter city name...">
+                    <button id="search-btn"><i class="fas fa-search"></i></button>
+                    <button id="location-btn"><i class="fas fa-location-arrow"></i></button>
+                </div>
+            </header>
+            
+            <main>
+                <div class="current-weather">
+                    <div class="weather-info">
+                        <h2 id="city-name">Search for a city</h2>
+                        <div id="weather-desc">Weather information will appear here</div>
+                        <div class="temperature-container">
+                            <div id="temp" class="temperature">--</div>
+                            <div class="unit-toggle">
+                                <button id="celsius-btn" class="active">°C</button>
+                                <button id="fahrenheit-btn">°F</button>
+                            </div>
+                        </div>
+                        <div class="weather-details">
+                            <div class="detail">
+                                <i class="fas fa-wind"></i>
+                                <span id="wind-speed">-- km/h</span>
+                            </div>
+                            <div class="detail">
+                                <i class="fas fa-tint"></i>
+                                <span id="humidity">--%</span>
+                            </div>
+                            <div class="detail">
+                                <i class="fas fa-compress-alt"></i>
+                                <span id="pressure">-- hPa</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="image-container">
+                        <div id="weather-icon" class="weather-icon">
+                            <i class="fas fa-sun"></i>
+                        </div>
+                        <img id="city-image" src="" alt="City Image">
+                    </div>
+                </div>
+                
+                <div class="forecast">
+                    <h3>5-Day Forecast</h3>
+                    <div id="forecast-container" class="forecast-container">
+                        <div class="forecast-placeholder">
+                            <p>5-day forecast will appear here</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            
+            <footer>
+                <p>Powered by OpenWeather & Unsplash</p>
+            </footer>
         </div>
     </div>
+    
+    <div id="loading" class="loading hidden">
+        <div class="spinner"></div>
+        <p>Loading weather data...</p>
+    </div>
+    
     <script src="script.js"></script>
 </body>
 </html>
